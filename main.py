@@ -1,7 +1,7 @@
 import pdfplumber
 
-pdf_path= r"data\invoices\invoices\Upload2.pdf"
-with pdfplumber.open(r"C:\Users\Aesha.sharma\document_extraction\data\invoices\invoices\Upload2.pdf") as pdf:
+pdf_path= r"/* doc path */ "
+with pdfplumber.open(r"/* path */") as pdf:  #open and closing file 'with open(file) as f:'
     text =""
 
     for page in pdf.pages:
@@ -20,3 +20,4 @@ prompt = f'''
     Return valid JSON only.property
     Document:
    '''
+
