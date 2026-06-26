@@ -2,17 +2,18 @@ import pdfplumber
 from pdf2image import convert_from_path
 import requests
 import os
-from pdf2image import convert_from_path
+# from pdf2image import convert_from_path
 from PIL import Image
 
 import pytesseract 
 pytesseract.pytesseract.tesseract_cmd = (
      r"C:\Users\Aesha.sharma\AppData\Local\Programs\Tesseract-OCR\tesseract.exe"
 )
+from coordinate_extractor import extract_coordinates
+import json
 
 
-
-file_path= r"C:\Users\Aesha.sharma\document_extraction\data\invoices\invoices\Screenshot 2026-06-25 052808.png"
+file_path= r"C:\Users\Aesha.sharma\document_extraction\data\invoices\invoices\invoice_19IV525391_page_1.pdf"
 
 text =""
 
@@ -50,19 +51,33 @@ else :
 print("  \n                EXTRACTED TEXT                       \n ")
 print(text[:3000])
 
+coordinates = extract_coordinates(file_path)
+with open("output/coordinates.json","w") as f:
+    json.dump(coordinates,f,indent =4)
+print("coordinates saved successfullty")
 prompt = f'''
     You are an invoice data extraction system.
     Extract only values explicitly present int the document.property
     Do not calculate. 
     do not infer.
     do not estimate.
-    Return valid JSON only.property
+    Return valid JSON only
+    feilds must be : 
+    - Invoice Number
+    - Date Issued
+    - Date Due
+    - Billing Address
+    - Shipping Address
+    -    Items: part number ,Description, Quantity, core price , total price, 
+    - net total  ,tax
+
     Document:
+    {text}
    '''
 
 #calling llama
 
-response = requests.post(
+response = requests.post(                       #sending prompt to server
     "http://localhost:11434/api/generate",
     json={
         "model" : "llama3",
