@@ -10,6 +10,7 @@ def extract_coordinates(file_path):
         searchable = pdf.pages[0].extract_words()
         if searchable:
             print("Searchable pdf")
+            
             for page_num , page in enumerate(pdf.pages):
                 words = page.extract_words()
                 for word in words:
@@ -21,24 +22,37 @@ def extract_coordinates(file_path):
                         "top" : word["top"],
                         "bottom" : word["bottom"]
                     })
-            else:
-                print("Scanned PDF- Usinf OCR")
-                image = convert_from_path(file_path)
-                for page_num , image in enumerate(images):
-                    data = pytesseract.image_to_data(
-                        image,
-                        output_type= Output.DICT
-                    )
-                    for i in range(len(data["text"])):
-                        if data ["text"][i].strip():
-                            
-                            coordinates.append({
-                                "pages": page_num,
-                                "text": data["text"][i],
-                                "x0": data["left"][i],
-                                "top":data["top"][i],
-                                "x1" : data["left"][i]+data["width"][i],
-                                "bottom" : data["top"][i]+data["height"][i]
-                            })
+        else:
+                print("Scanned PDF Usinf OCR")
+                import fitz
+                from PIL import Image
+
+                doc = fitz.open(file_path)
+
+                for page_num, page in enumerate(doc):   
+                    pix = page.get_pixmap(dpi=300)
+
+                image = Image.frombytes(
+                    "RGB",
+                    [pix.width, pix.height],
+                    pix.samples
+                )
+
+                data = pytesseract.image_to_data(
+                    image,
+                    output_type=Output.DICT
+                )
+
+                for i in range(len(data["text"])):
+                    if data["text"][i].strip():
+
+                     coordinates.append({
+                        "page": page_num,
+                        "text": data["text"][i],
+                        "x0": data["left"][i],
+                        "top": data["top"][i],
+                        "x1": data["left"][i] + data["width"][i],
+                        "bottom": data["top"][i] + data["height"][i]
+                    })
 
     return coordinates
