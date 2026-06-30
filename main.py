@@ -1,5 +1,6 @@
 import pdfplumber
-from pdf2image import convert_from_path
+import json
+#from pdf2image import convert_from_path
 import requests
 import os
 # from pdf2image import convert_from_path
@@ -10,16 +11,14 @@ pytesseract.pytesseract.tesseract_cmd = (
      r"C:\Users\Aesha.sharma\AppData\Local\Programs\Tesseract-OCR\tesseract.exe"
 )
 from coordinate_extractor import extract_coordinates
-import json
 
-
-file_path= r"C:\Users\Aesha.sharma\document_extraction\data\invoices\invoices\invoice_19IV525391_page_1.pdf"
-
+file_path= r"C:\Users\Aesha.sharma\document_extraction\Sample_Template\NAPA invoices\Napa 2.pdf"
 text =""
+
 
 extention = os.path.splitext(file_path)[1].lower()
 
-if extention in [".png" , "jpeg" , "jpg"]:
+if extention in [".png" , ".jpeg" , ".jpg"]:
     print("Image detected. Using OCR....")
     image = Image.open(file_path)
     text = pytesseract.image_to_string(image) 
@@ -36,13 +35,29 @@ elif extention == ".pdf":
     except Exception as e:
         print("PDF extraction error :",e)
 
+    
+    import fitz
+
+    doc = fitz.open(file_path)
+
+    text = ""
+
+    for page in doc:
+        text += page.get_text()
+
     if len(text.strip()) < 50:
         print("no text founf. USING OCR...")
 
-        pages = convert_from_path(file_path)
-        for page in pages:
-            page_text = pytesseract.image_to_string(page)
-            text += page_text +"\n"
+        for page in doc:
+            pix = page.get_pixmap(dpi=300)      #taking photo of the page
+
+            img = Image.frombytes(              # converts pymupdf raw img into a normal pil image
+                "RGB",
+                [pix.width, pix.height],
+                pix.samples
+            )
+
+            text += pytesseract.image_to_string(img) + "\n"
 
 else :
     print("unsupported file type")
@@ -52,41 +67,41 @@ print("  \n                EXTRACTED TEXT                       \n ")
 print(text[:3000])
 
 coordinates = extract_coordinates(file_path)
-with open("output/coordinates.json","w") as f:
+with open("coordinates_NAPA/Napa02.json","w") as f:
     json.dump(coordinates,f,indent =4)
 print("coordinates saved successfullty")
-prompt = f'''
-    You are an invoice data extraction system.
-    Extract only values explicitly present int the document.property
-    Do not calculate. 
-    do not infer.
-    do not estimate.
-    Return valid JSON only
-    feilds must be : 
-    - Invoice Number
-    - Date Issued
-    - Date Due
-    - Billing Address
-    - Shipping Address
-    -    Items: part number ,Description, Quantity, core price , total price, 
-    - net total  ,tax
+# prompt = f'''
+#     You are an invoice data extraction system.
+#     Extract only values explicitly present int the document.property
+#     Do not calculate. 
+#     do not infer.
+#     do not estimate.
+#     Return valid JSON only
+#     feilds must be : 
+#     - Invoice Number
+#     - Date Issued
+#     - Date Due
+#     - Billing Address
+#     - Shipping Address
+#     -    Items: part number ,Description, Quantity, core price , total price, 
+#     - net total  ,tax
 
-    Document:
-    {text}
-   '''
+#     Document:
+#     {text}
+#    '''
 
-#calling llama
+# #calling llama
 
-response = requests.post(                       #sending prompt to server
-    "http://localhost:11434/api/generate",
-    json={
-        "model" : "llama3",
-        "prompt" : prompt ,
-        "stream" : False
-    }
-)
+# response = requests.post(                       #sending prompt to server
+#     "http://localhost:11434/api/generate",
+#     json={
+#         "model" : "llama3",
+#         "prompt" : prompt ,
+#         "stream" : False
+#     }
+# )
 
-result = response.json()["response"]
+# result = response.json()["response"]
 
-print("LLAMA Output")
-print(result)
+# print("LLAMA Output")
+# print(result)
