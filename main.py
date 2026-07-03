@@ -11,8 +11,9 @@ pytesseract.pytesseract.tesseract_cmd = (
      r"C:\Users\Aesha.sharma\AppData\Local\Programs\Tesseract-OCR\tesseract.exe"
 )
 from coordinate_extractor import extract_coordinates
+from template_matcher_napa import extract_napa_feilds
 
-file_path= r"C:\Users\Aesha.sharma\document_extraction\Sample_Template\NAPA invoices\Napa 2.pdf"
+file_path= r"C:\Users\Aesha.sharma\document_extraction\Sample_Template\NAPA invoices\NAPA_8.pdf"
 text =""
 
 
@@ -63,13 +64,19 @@ else :
     print("unsupported file type")
     exit()
 
-print("  \n                EXTRACTED TEXT                       \n ")
+print("\n                EXTRACTED TEXT                       \n ")
 print(text[:3000])
 
 coordinates = extract_coordinates(file_path)
-with open("coordinates_NAPA/Napa02.json","w") as f:
+print(type(coordinates))
+#print(coordinates[:50])
+with open("coordinates_NAPA/Napa_8.json","w") as f:
     json.dump(coordinates,f,indent =4)
 print("coordinates saved successfullty")
+    
+result = extract_napa_feilds("coordinates_NAPA/NAPA_8.json")
+print("\n extracted data\n")
+print(json.dumps(result,indent=4))
 # prompt = f'''
 #     You are an invoice data extraction system.
 #     Extract only values explicitly present int the document.property
