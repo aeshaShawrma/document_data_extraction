@@ -1,0 +1,72 @@
+{
+    
+    "invoice_number": {
+        "x_min": 430,
+        "x_max": 510,
+        "y_min": 20,
+        "y_max": 45
+    },
+    "invoice_date": {
+        "x_min": 430,
+        "x_max": 530,
+        "y_min": 35,
+        "y_max": 60
+    },
+    "po_number": {
+        "x_min": 430,
+        "x_max": 520,
+        "y_min": 115,
+        "y_max": 140
+    },
+    "subtotal": {
+        "x_min": 450,
+        "x_max": 570,
+        "y_min": 575,
+        "y_max": 605
+    } ,
+    "tax": {
+        "x_min": 450,
+        "x_max": 570,
+        "y_min": 625,
+        "y_max": 650
+    },
+
+    "invoice_total": {
+        "x_min": 450,
+        "x_max": 570,
+        "y_min": 690,
+        "y_max": 725
+    },
+
+    "product_table":{
+        "top" : 215,
+        "bottom" : 500,
+        
+        "columns": {
+            "part_number": {
+                "x_min": 20,
+                "x_max": 90
+            },
+    
+            "description": {
+                "x_min": 140,
+                "x_max": 325
+            },
+            
+            "quantity": {
+                "x_min": 325,
+                "x_max": 380
+            },
+            "price": { 
+                "x_min": 390,
+                "x_max": 435
+            },
+    
+            "line_total": {
+                "x_min": 495,
+                "x_max": 540
+            }
+        }
+    }
+
+}
