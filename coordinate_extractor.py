@@ -46,13 +46,13 @@ def extract_coordinates(file_path):
                 for i in range(len(data["text"])):
                     if data["text"][i].strip():
 
-                     coordinates.append({
-                        "page": page_num,
-                        "text": data["text"][i],
-                        "x0": data["left"][i],
-                        "top": data["top"][i],
-                        "x1": data["left"][i] + data["width"][i],
-                        "bottom": data["top"][i] + data["height"][i]
-                    })
+                        coordinates.append({
+                            "page": page_num,
+                            "text": data["text"][i],
+                            "x0": data["left"][i],
+                            "top": data["top"][i],
+                            "x1": data["left"][i] + data["width"][i],
+                            "bottom": data["top"][i] + data["height"][i]
+                        })
 
     return coordinates
