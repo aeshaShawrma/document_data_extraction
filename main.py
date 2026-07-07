@@ -13,7 +13,7 @@ pytesseract.pytesseract.tesseract_cmd = (
 from coordinate_extractor import extract_coordinates
 from template_matcher_napa import extract_napa_feilds
 
-file_path= r"C:\Users\Aesha.sharma\document_extraction\Sample_Template\NAPA invoices\NAPA_8.pdf"
+file_path= r"C:\Users\Aesha.sharma\document_extraction\Sample_Template\autozone\Autozone 14 to 20 june.pdf"
 text =""
 
 
@@ -70,11 +70,11 @@ print(text[:3000])
 coordinates = extract_coordinates(file_path)
 print(type(coordinates))
 #print(coordinates[:50])
-with open("coordinates_NAPA/Napa_8.json","w") as f:
+with open("coordinates/coordinates_NAPA/coordinates_autozone/2.json","w") as f:
     json.dump(coordinates,f,indent =4)
 print("coordinates saved successfullty")
     
-result = extract_napa_feilds("coordinates_NAPA/NAPA_8.json")
+result = extract_napa_feilds("coordinates/coordinates_NAPA/coordinates_autozone/2.json")
 print("\n extracted data\n")
 print(json.dumps(result,indent=4))
 # prompt = f'''
