@@ -1,7 +1,7 @@
 import json 
 
 
-with open("coordinates_NAPA/Napa_template.json","r") as f:
+with open("coordinates/coordinates_NAPA/coordinates_autozone/autozone_template.json","r") as f:
     TEMPLATE = json.load(f)
 
 
@@ -111,7 +111,7 @@ def extract_products(words):
             'description' : " ",
             "quantity" : " ",
             "price" : " ",
-            "net" : " ",
+            "core" : " ",
             "line_total" : " "
         }
         # for row in rows.values():
@@ -135,6 +135,8 @@ def extract_products(words):
                 product["quantity"] += word["text"] + ' '
             elif columns["price"]["x_min"] <= x <= columns["price"]['x_max']:
                 product["price"] += word["text"] + ' '
+            elif columns["core"]["x_min"] <= x <= columns["core"]['x_max']:
+                product["core"] += word["text"] + ' '
             elif columns["line_total"]["x_min"] <= x <= columns["line_total"]["x_max"]:
                 product["line_total"] += word["text"] + " "
         if (product["description"] != "" or product["part_number"] != "" or product["quantity"] != "" or product["price"]!= ""):
@@ -148,6 +150,12 @@ def extract_products(words):
                 continue
             if "/" in part:
                 continue
+            import re
+            if not product["quantity"]:
+                m = re.match(r'^(-?\d+)\s+(.*)$', product["description"])
+                if m:
+                    product["quantity"] = m.group(1)
+                    product["description"] = m.group(2)
             products.append(product)
     return products
 
